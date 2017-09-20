@@ -11,6 +11,8 @@ public class Odometer extends Thread {
   private int rightMotorTachoCount;
   private EV3LargeRegulatedMotor leftMotor;
   private EV3LargeRegulatedMotor rightMotor;
+  public static final double WHEEL_RADIUS = 2.1;  //DOUBLE CHECK THIS
+  public static final double TRACK = 16.9;			//DOUBLE CHECK THIS
 
   private static final long ODOMETER_PERIOD = 25; /*odometer update period, in ms*/
 
@@ -35,14 +37,48 @@ public class Odometer extends Thread {
     while (true) {
       updateStart = System.currentTimeMillis();
       // TODO put (some of) your odometer code here
+      
+      double DistL = 0;
+      double DistR = 0;
+      double deltaD = 0;
+      double deltaT = 0;
+      double dX = 0;
+      double dY = 0;
+      
+      int nextLeftMotorTachoCount = leftMotor.getTachoCount();
+      int nextRightMotorTachoCount= rightMotor.getTachoCount();
+      
+      DistL = WHEEL_RADIUS*(3.14159)*(nextLeftMotorTachoCount - leftMotorTachoCount)/180;
+      DistR = WHEEL_RADIUS*(3.14159)*(nextRightMotorTachoCount - rightMotorTachoCount)/180;
+      
+      this.setLeftMotorTachoCount(nextLeftMotorTachoCount);
+      this.setRightMotorTachoCount(nextRightMotorTachoCount);
+      
+      deltaD = (0.5)*(DistL + DistR);
+      deltaT = (DistL - DistR)/(TRACK);
+      
+      
 
       synchronized (lock) {
-        /**
+
+    	 /**
          * Don't use the variables x, y, or theta anywhere but here! Only update the values of x, y,
          * and theta in this block. Do not perform complex math
          * 
          */
-        theta = -0.7376; // TODO replace example value
+        theta = 0.0000; // TODO replace example value
+        
+        dX = deltaD * Math.sin(this.getTheta());
+        dY = deltaD * Math.cos(this.getTheta());
+        
+        this.setTheta(this.getTheta()+deltaT);
+        
+       
+        
+        this.setX( this.getX() + dX);
+        this.setY(this.getY() + dY);
+        
+        
       }
 
       // this ensures that the odometer only runs once every period
