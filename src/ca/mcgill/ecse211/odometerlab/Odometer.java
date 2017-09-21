@@ -14,7 +14,7 @@ public class Odometer extends Thread {
   private EV3LargeRegulatedMotor leftMotor;
   private EV3LargeRegulatedMotor rightMotor;
   public static final double WHEEL_RADIUS = 2.1;  //DOUBLE CHECK THIS
-  public static final double TRACK = 16.9;			//DOUBLE CHECK THIS
+  public static final double TRACK = 15.5;			//DOUBLE CHECK THIS
 
   private static final long ODOMETER_PERIOD = 25; /*odometer update period, in ms*/
 
