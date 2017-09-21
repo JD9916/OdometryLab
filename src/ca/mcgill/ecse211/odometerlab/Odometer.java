@@ -9,6 +9,8 @@ public class Odometer extends Thread {
   private double theta;
   private int leftMotorTachoCount;
   private int rightMotorTachoCount;
+  private int nextLeftMotorTachoCount;
+  private int nextRightMotorTachoCount;
   private EV3LargeRegulatedMotor leftMotor;
   private EV3LargeRegulatedMotor rightMotor;
   public static final double WHEEL_RADIUS = 2.1;  //DOUBLE CHECK THIS
@@ -44,9 +46,10 @@ public class Odometer extends Thread {
       double deltaT = 0;
       double dX = 0;
       double dY = 0;
+     
       
-      int nextLeftMotorTachoCount = leftMotor.getTachoCount();
-      int nextRightMotorTachoCount= rightMotor.getTachoCount();
+      nextLeftMotorTachoCount = leftMotor.getTachoCount();
+      nextRightMotorTachoCount= rightMotor.getTachoCount();
       
       DistL = WHEEL_RADIUS*(3.14159)*(nextLeftMotorTachoCount - leftMotorTachoCount)/180;
       DistR = WHEEL_RADIUS*(3.14159)*(nextRightMotorTachoCount - rightMotorTachoCount)/180;
@@ -58,6 +61,7 @@ public class Odometer extends Thread {
       deltaT = (DistL - DistR)/(TRACK);
       
       
+      
 
       synchronized (lock) {
 
@@ -66,20 +70,36 @@ public class Odometer extends Thread {
          * and theta in this block. Do not perform complex math
          * 
          */
-        theta = 0.0000; // TODO replace example value
+        //theta = 0.0000; // TODO replace example value
+        
+    	  
+    	  
+    	this.setTheta((this.getTheta() + deltaT));		//double check this
+    	if(this.getTheta() >= 2*3.14159){
+    		
+    		this.setTheta(this.getTheta() - 2*3.14159) ;
+    	}
+        
+    	if(this.getTheta() <= -2*3.14159){
+    		this.setTheta(this.getTheta() + 2*3.14159 );
+    	}
+        
+        
         
         dX = deltaD * Math.sin(this.getTheta());
         dY = deltaD * Math.cos(this.getTheta());
         
-        this.setTheta(this.getTheta()+deltaT);
-        
-       
-        
-        this.setX( this.getX() + dX);
+        this.setX(this.getX() + dX);
         this.setY(this.getY() + dY);
         
         
+        
+        
+        
       }
+      
+      
+      
 
       // this ensures that the odometer only runs once every period
       updateEnd = System.currentTimeMillis();
