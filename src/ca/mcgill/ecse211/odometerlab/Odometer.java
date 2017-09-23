@@ -46,8 +46,7 @@ public class Odometer extends Thread {
       double deltaT = 0;
       double dX = 0;
       double dY = 0;
-     
-      
+
       nextLeftMotorTachoCount = leftMotor.getTachoCount();
       nextRightMotorTachoCount= rightMotor.getTachoCount();
       

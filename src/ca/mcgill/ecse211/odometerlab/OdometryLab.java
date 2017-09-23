@@ -8,6 +8,10 @@ import lejos.hardware.lcd.TextLCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.port.MotorPort;
 import lejos.hardware.port.Port;
+import lejos.hardware.sensor.SensorModes;
+import lejos.hardware.sensor.EV3ColorSensor;
+import lejos.robotics.SampleProvider;
+import lejos.utility.Delay;
 
 public class OdometryLab {
 
@@ -16,6 +20,8 @@ public class OdometryLab {
   
   private static final EV3LargeRegulatedMotor rightMotor =
       new EV3LargeRegulatedMotor(LocalEV3.get().getPort("D"));
+  
+  private static final Port csPort = LocalEV3.get().getPort("S1");
 
   public static final double WHEEL_RADIUS = 2.1;
   public static final double TRACK = 15.5;
@@ -26,8 +32,23 @@ public class OdometryLab {
     final TextLCD t = LocalEV3.get().getTextLCD();
     Odometer odometer = new Odometer(leftMotor, rightMotor);
     OdometryDisplay odometryDisplay = new OdometryDisplay(odometer, t);
-    OdometryCorrection odometryCorrection = new OdometryCorrection(odometer);
-
+   
+    
+    @SuppressWarnings("resource")
+    EV3ColorSensor csSensor = new EV3ColorSensor(csPort);
+    SampleProvider csColor = csSensor.getMode("Red");
+    
+    float[] csData = new float[csColor.sampleSize()];
+    
+    ColorSensorPoller csPoller = null;
+    
+    csPoller = new ColorSensorPoller(csColor,csData);
+    OdometryCorrection odometryCorrection = new OdometryCorrection(odometer, csPoller);
+    
+    csPoller.start();
+    
+    
+    
     do {
       // clear the display
       t.clear();
@@ -68,7 +89,7 @@ public class OdometryLab {
       odometer.start();
       odometryDisplay.start();
       
-      if(buttonChoice != Button.ID_RIGHT){
+      if(buttonChoice == Button.ID_RIGHT){
         odometryCorrection.start();
       }
       
@@ -81,6 +102,7 @@ public class OdometryLab {
     }
 
     while (Button.waitForAnyPress() != Button.ID_ESCAPE);
+    
     System.exit(0);
   }
 }
