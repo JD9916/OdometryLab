@@ -24,8 +24,8 @@ public class Odometer extends Thread {
   public Odometer(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor) {
     this.leftMotor = leftMotor;
     this.rightMotor = rightMotor;
-    this.x = 0.0;
-    this.y = 0.0;
+    this.x = -15.24;
+    this.y = -15.24;
     this.theta = 0.0;
     this.leftMotorTachoCount = 0;
     this.rightMotorTachoCount = 0;
@@ -50,8 +50,8 @@ public class Odometer extends Thread {
       nextLeftMotorTachoCount = leftMotor.getTachoCount();
       nextRightMotorTachoCount= rightMotor.getTachoCount();
       
-      DistL = WHEEL_RADIUS*(3.14159)*(nextLeftMotorTachoCount - leftMotorTachoCount)/180;
-      DistR = WHEEL_RADIUS*(3.14159)*(nextRightMotorTachoCount - rightMotorTachoCount)/180;
+      DistL = WHEEL_RADIUS*Math.PI*(nextLeftMotorTachoCount - leftMotorTachoCount)/180;
+      DistR = WHEEL_RADIUS*Math.PI*(nextRightMotorTachoCount - rightMotorTachoCount)/180;
       
       this.setLeftMotorTachoCount(nextLeftMotorTachoCount);
       this.setRightMotorTachoCount(nextRightMotorTachoCount);
@@ -73,20 +73,20 @@ public class Odometer extends Thread {
         
     	  
     	  
-    	this.setTheta((this.getTheta() + deltaT));		//double check this
-    	if(this.getTheta() >= 2*3.14159){
+    	this.setTheta(((this.getTheta()*(Math.PI/180)) + deltaT)*(180/Math.PI));		//double check this
+    	if((this.getTheta()*(Math.PI/180)) >= 2*Math.PI){
     		
-    		this.setTheta(this.getTheta() - 2*3.14159) ;
+    		this.setTheta(((this.getTheta()*(Math.PI/180)) - 2*Math.PI)*(180/Math.PI)) ;
     	}
         
-    	if(this.getTheta() <= -2*3.14159){
-    		this.setTheta(this.getTheta() + 2*3.14159 );
+    	if(this.getTheta() <= -2*Math.PI){
+    		this.setTheta(((this.getTheta()*(Math.PI/180)) + 2*Math.PI)*(180/Math.PI));
     	}
         
         
         
-        dX = deltaD * Math.sin(this.getTheta());
-        dY = deltaD * Math.cos(this.getTheta());
+        dX = deltaD * Math.sin(this.getTheta()*(Math.PI/180));
+        dY = deltaD * Math.cos(this.getTheta()*(Math.PI/180));
         
         this.setX(this.getX() + dX);
         this.setY(this.getY() + dY);
