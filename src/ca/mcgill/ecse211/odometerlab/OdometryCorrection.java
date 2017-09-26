@@ -10,45 +10,41 @@ public class OdometryCorrection extends Thread {
   private Odometer odometer;
   private ColorSensorPoller poller;
   private int colorValue;
-  private int xCalibration;
-  private int yCalibration;
   
   
 
   // constructor
-  public OdometryCorrection(Odometer odometer, ColorSensorPoller ColorSensorPoller) {
+  public OdometryCorrection(Odometer odometer, ColorSensorPoller ColorSensorPoller) {   //Passes in the ColorSensorPoller class
     this.odometer = odometer;
-    this.poller = ColorSensorPoller;
+    this.poller = ColorSensorPoller; //initiates the poller variable of this class. This is done to pass in values from the color sensor 
     
   }
 
   // run method (required for Thread)
   public void run() {
     long correctionStart, correctionEnd;
-    xCalibration = 0;
-    yCalibration = 0;
     
     while (true) {
       correctionStart = System.currentTimeMillis();
       
-      colorValue = poller.getColor();
+      colorValue = poller.getColor();   //Assigns values form the color sensor to a variable that is later used to detect a black line
             
       
       
       
-	      if ((SquareDriver.getTurns() % 2) == 1) { 
-		      if(colorValue < 30){
-		    	  Sound.beep();
+	      if ((SquareDriver.getTurns() % 2) == 1) {   //If the turn number is either 1 or 3, fix values of X only
+		      if(colorValue < 30){   //A sensor reading below 30 was chosen to register a black line
+		    	  Sound.beep();      //Make a beeping sound
 		    	  
-		    	  if(odometer.getX()>=0) {
-			    	  if((odometer.getX() % 30.48) >= 15.24) {
-			    		  odometer.setX(odometer.getX() + (30.48-(odometer.getX()%30.48)));
+		    	  if(odometer.getX()>=0) {   //If the current X position is positive
+			    	  if((odometer.getX() % 30.48) > 15.24) { //If the current position is closer to the next multiple of 30.48 than the previous
+			    		  odometer.setX(odometer.getX() + (30.48-(odometer.getX()%30.48)));  //Correct position to the next multiple of 30.48
 			    	  }
 			    	  else {
-			    		  odometer.setX(odometer.getX() - (odometer.getX()%30.48));
+			    		  odometer.setX(odometer.getX() - (odometer.getX()%30.48));  //Correct position to the previous multiple of 30.48
 			    	  }
 			      }
-		    	  else {
+		    	  else {    //Same as above, if the current X position is negative
 		    		  if((Math.abs(odometer.getX()) % 30.48) > 15.24) {
 			    		  odometer.setX((Math.abs(odometer.getX()) + (30.48-(Math.abs(odometer.getX())%30.48)))*(-1));
 			    	  }
@@ -58,12 +54,12 @@ public class OdometryCorrection extends Thread {
 		    	  }
 		      }
 	      }
-	      else {
+	      else {      //If the turn number is either 0 or 2, fix values of Y only (same as above but for Y values)
 	    	  if(colorValue < 30){
 	    		  Sound.beep();
 	    		  if(odometer.getY()>=0) {
 	    			  
-			    	  if((odometer.getY() % 30.48) >= 15.24) {
+			    	  if((odometer.getY() % 30.48) > 15.24) {
 			    		  odometer.setY(odometer.getY() + (30.48-(odometer.getY()%30.48)));
 			    	  }
 			    	  else {

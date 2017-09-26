@@ -8,7 +8,7 @@ import lejos.hardware.motor.EV3LargeRegulatedMotor;
 public class SquareDriver {
   private static final int FORWARD_SPEED = 250;
   private static final int ROTATE_SPEED = 150;
-  private static int turns; 
+  private static int turns; //A variable that is used in the OdometryCorrection class
 
   public static void drive(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor,
       double leftRadius, double rightRadius, double width) {
@@ -34,8 +34,8 @@ public class SquareDriver {
       leftMotor.setSpeed(FORWARD_SPEED);
       rightMotor.setSpeed(FORWARD_SPEED);
 
-      leftMotor.rotate(convertDistance(leftRadius, 91.44), true);
-      rightMotor.rotate(convertDistance(rightRadius, 91.44), false);
+      leftMotor.rotate(convertDistance(leftRadius, 90), true);        //The robot goes in a 3x3 square    
+      rightMotor.rotate(convertDistance(rightRadius, 90), false);
 
       // turn 90 degrees clockwise
       leftMotor.setSpeed(ROTATE_SPEED);
@@ -54,11 +54,11 @@ public class SquareDriver {
     return convertDistance(radius, Math.PI * width * angle / 360.0);
   }
   
-  public static int getTurns() {
+  public static int getTurns() {  //gets the number of turns
 	  return turns;
   }
   
-  private static void setTurns(int i) {
+  private static void setTurns(int i) {  //sets the number of turns
 	  turns = i;
   }
   
