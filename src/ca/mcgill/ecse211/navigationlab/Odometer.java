@@ -7,14 +7,14 @@ public class Odometer extends Thread {
   private double x;
   private double y;
   private double theta;
-  private int leftMotorTachoCount;                //Current tachometer count for left wheel
-  private int rightMotorTachoCount;               //Current tachometer count for right wheel
-  private int nextLeftMotorTachoCount;			  //Next tachometer count for left wheel
-  private int nextRightMotorTachoCount;			  //Next tachometer count for left wheel
+  private int leftMotorTachoCount;
+  private int rightMotorTachoCount;
+  private int nextLeftMotorTachoCount;
+  private int nextRightMotorTachoCount;
   private EV3LargeRegulatedMotor leftMotor;
   private EV3LargeRegulatedMotor rightMotor;
-  public static final double WHEEL_RADIUS = 2.1;    //radius of a wheel
-  public static final double TRACK = 15.15;			//Width of the axle
+  public static final double WHEEL_RADIUS = 2.1;  //DOUBLE CHECK THIS
+  public static final double TRACK = 15.5;			//DOUBLE CHECK THIS
 
   private static final long ODOMETER_PERIOD = 25; /*odometer update period, in ms*/
 
@@ -24,8 +24,8 @@ public class Odometer extends Thread {
   public Odometer(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor) {
     this.leftMotor = leftMotor;
     this.rightMotor = rightMotor;
-    this.x = -15.24;         //As the origin is set to be the one shown
-    this.y = -15.24;         //in the lab instructions
+    this.x = -15.24;
+    this.y = -15.24;
     this.theta = 0.0;
     this.leftMotorTachoCount = 0;
     this.rightMotorTachoCount = 0;
@@ -40,24 +40,24 @@ public class Odometer extends Thread {
       updateStart = System.currentTimeMillis();
       // TODO put (some of) your odometer code here
       
-      double DistL = 0;           //Distance covered by the left wheel
-      double DistR = 0;			  //Distance covered by the right wheel
-      double deltaD = 0;		  //Change in distance
-      double deltaT = 0;		  //Change in the theta (the angle the robot is facing)
-      double dX = 0;			  //Change in X
-      double dY = 0;			  //Change in Y
+      double DistL = 0;
+      double DistR = 0;
+      double deltaD = 0;
+      double deltaT = 0;
+      double dX = 0;
+      double dY = 0;
 
       nextLeftMotorTachoCount = leftMotor.getTachoCount();
       nextRightMotorTachoCount= rightMotor.getTachoCount();
       
-      DistL = WHEEL_RADIUS*Math.PI*(nextLeftMotorTachoCount - leftMotorTachoCount)/180;     //Calculating the distance covered by the left wheel
-      DistR = WHEEL_RADIUS*Math.PI*(nextRightMotorTachoCount - rightMotorTachoCount)/180;   //Calculating the distance covered by the right wheel
+      DistL = WHEEL_RADIUS*Math.PI*(nextLeftMotorTachoCount - leftMotorTachoCount)/180;
+      DistR = WHEEL_RADIUS*Math.PI*(nextRightMotorTachoCount - rightMotorTachoCount)/180;
       
-      this.setLeftMotorTachoCount(nextLeftMotorTachoCount);          //Setting the tachometer
-      this.setRightMotorTachoCount(nextRightMotorTachoCount);		 //counts to current ones
+      this.setLeftMotorTachoCount(nextLeftMotorTachoCount);
+      this.setRightMotorTachoCount(nextRightMotorTachoCount);
       
-      deltaD = (0.5)*(DistL + DistR);      //Calculating changed in distance traveled by the robot
-      deltaT = (DistL - DistR)/(TRACK);    //Calculating the change in the robot's angle
+      deltaD = (0.5)*(DistL + DistR);
+      deltaT = (DistL - DistR)/(TRACK);
       
       
       
@@ -69,29 +69,35 @@ public class Odometer extends Thread {
          * and theta in this block. Do not perform complex math
          * 
          */
-        // TODO replace example value
+        //theta = 0.0000; // TODO replace example value
         
     	  
-    	//The calculations are performed with theta in radians (values are converted from degrees to radians by multiplying with pi/180). The results are all displayed in degrees (Radians are converted to degrees by multiplying them by 180/pi).
-    	this.setTheta(((this.getTheta()*(Math.PI/180)) + deltaT)*(180/Math.PI));
-    	if((this.getTheta()*(Math.PI/180)) >= 2*Math.PI){     //If the angle exceeds 360 degrees (2pi), reset it to 0 degrees
+    	  
+    	this.setTheta(((this.getTheta()*(Math.PI/180)) + deltaT)*(180/Math.PI));		//double check this
+    	if((this.getTheta()*(Math.PI/180)) >= 2*Math.PI){
     		
     		this.setTheta(((this.getTheta()*(Math.PI/180)) - 2*Math.PI)*(180/Math.PI)) ;
     	}
         
-    	if(this.getTheta() < 0){ //If the angle drops below 0 degrees, readjust it to drop from 360 degrees.
+    	if(this.getTheta() <= -2*Math.PI){
     		this.setTheta(((this.getTheta()*(Math.PI/180)) + 2*Math.PI)*(180/Math.PI));
     	}
         
         
         
-        dX = deltaD * Math.sin(this.getTheta()*(Math.PI/180));   //Calculating the change in X
-        dY = deltaD * Math.cos(this.getTheta()*(Math.PI/180));   //Calculating the change in Y
+        dX = deltaD * Math.sin(this.getTheta()*(Math.PI/180));
+        dY = deltaD * Math.cos(this.getTheta()*(Math.PI/180));
         
-        this.setX(this.getX() + dX);   //Updating the X position
-        this.setY(this.getY() + dY);   //Updating the Y position     
+        this.setX(this.getX() + dX);
+        this.setY(this.getY() + dY);
+        
+        
+        
+        
         
       }
+      
+      
       
 
       // this ensures that the odometer only runs once every period
