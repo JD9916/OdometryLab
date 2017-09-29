@@ -1,4 +1,4 @@
-package ca.mcgill.ecse211.navigationlab;
+package ca.mcgill.ecse211.odometerlab;
 
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 

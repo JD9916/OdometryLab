@@ -1,4 +1,4 @@
-package ca.mcgill.ecse211.navigationlab;
+package ca.mcgill.ecse211.odometerlab;
 
 import lejos.robotics.SampleProvider;
 
@@ -12,11 +12,13 @@ import lejos.robotics.SampleProvider;
  */
 public class ColorSensorPoller extends Thread {
   private SampleProvider cs;
+  private ColorSensorController cont;
   private float[] csData;
   public int color;
   
   public ColorSensorPoller(SampleProvider cs, float[] csData) {
     this.cs = cs;
+    //this.cont = cont;
     this.csData = csData;
   }
 
