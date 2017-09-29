@@ -2,8 +2,8 @@
  * OdometryDisplay.java
  */
 
-package ca.mcgill.ecse211.odometerlab;
-
+//package ca.mcgill.ecse211.odometerlab;
+package ca.mcgill.ecse211.navigationlab;
 import lejos.hardware.lcd.TextLCD;
 
 public class OdometryDisplay extends Thread {
